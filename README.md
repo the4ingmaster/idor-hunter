@@ -16,7 +16,7 @@ Advanced IDOR Detection Tool for Security Researchers and Pentesters.
 
 ## Installation
 
-git clone https://github.com/<username>/idor-hunter
+git clone https://github.com/the4ingmaster/idor-hunter
 
 cd idor-hunter
 
