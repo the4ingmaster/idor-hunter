@@ -1,4 +1,4 @@
-ID_KEYS = [
+ID_KEYWORDS = [
 "id",
 "user",
 "user_id",
@@ -7,16 +7,19 @@ ID_KEYS = [
 "account_id",
 "order",
 "order_id",
-"uuid"
+"uuid",
+"customer",
+"profile"
 ]
 
-def discover_id_parameters(params):
 
-    discovered = []
+def discover_parameters(params):
+
+    found = []
 
     for key in params:
 
-        if any(word in key.lower() for word in ID_KEYS):
-            discovered.append(key)
+        if any(k in key.lower() for k in ID_KEYWORDS):
+            found.append(key)
 
-    return discovered
+    return found
