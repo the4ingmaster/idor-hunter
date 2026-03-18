@@ -1,49 +1,49 @@
 import argparse
 import requests
-from urllib.parse import urlparse, parse_qs
+from urllib.parse import urlparse,parse_qs
 from banner import print_banner
-from discovery import discover_id_parameters
-from fuzzers import fuzz_get, fuzz_post
+from discovery import discover_parameters
+from fuzzers import fuzz_parameters
+from response_analyzer import analyze
+from request_parser import parse_burp_request
 from tqdm import tqdm
 from colorama import Fore
 
 
-def compare_response(base, new):
-
-    return base.status_code == new.status_code and len(base.text) == len(new.text)
-
-
-def run_get_scan(url):
+def scan_url(url,headers):
 
     parsed = urlparse(url)
 
-    base_url = parsed.scheme + "://" + parsed.netloc + parsed.path
+    base = parsed.scheme + "://" + parsed.netloc + parsed.path
+
     params = {k:v[0] for k,v in parse_qs(parsed.query).items()}
 
-    print(Fore.CYAN + f"[+] Target: {base_url}")
-    print(Fore.CYAN + f"[+] Parameters: {params}")
+    print(Fore.CYAN + "[+] Target:",base)
 
-    id_params = discover_id_parameters(params)
+    id_params = discover_parameters(params)
 
-    print(Fore.YELLOW + f"[+] Discovered ID params: {id_params}")
+    print(Fore.YELLOW + "[+] ID Parameters:",id_params)
 
-    base_response = requests.get(base_url, params=params)
+    baseline = requests.get(base,params=params,headers=headers)
 
-    for param in id_params:
+    b_status = baseline.status_code
+    b_len = len(baseline.text)
 
-        mutations = fuzz_get(base_url, params, param)
+    print(Fore.GREEN + f"[+] Baseline -> {b_status} | {b_len}")
 
-        print(Fore.YELLOW + f"[+] Testing parameter: {param}")
+    results = fuzz_parameters(base,params,headers)
 
-        for m in tqdm(mutations):
+    for key,val,status,length in tqdm(results):
 
-            r = requests.get(base_url, params=m)
+        verdict = analyze(b_status,b_len,status,length)
 
-            if compare_response(base_response, r):
+        if verdict == "POSSIBLE_IDOR":
 
-                print(Fore.RED + "[!] Possible IDOR")
-                print("Payload:", m)
-                print()
+            print(Fore.RED + "\n[!] Possible IDOR Detected")
+            print("Parameter:",key)
+            print("Payload:",val)
+            print("Status:",status)
+            print("Length:",length)
 
 
 def main():
@@ -52,14 +52,30 @@ def main():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("-u","--url",help="Target URL")
-    parser.add_argument("--post",help="POST endpoint")
-    parser.add_argument("--data",help="POST data example")
+    parser.add_argument("-u","--url")
+    parser.add_argument("--request")
+    parser.add_argument("--header")
+    parser.add_argument("--cookie")
 
     args = parser.parse_args()
 
+    headers = {}
+
+    if args.header:
+        k,v = args.header.split(":")
+        headers[k.strip()] = v.strip()
+
+    if args.cookie:
+        headers["Cookie"] = args.cookie
+
     if args.url:
-        run_get_scan(args.url)
+        scan_url(args.url,headers)
+
+    if args.request:
+
+        method,url,headers = parse_burp_request(args.request)
+
+        scan_url(url,headers)
 
 
 if __name__ == "__main__":
