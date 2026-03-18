@@ -24,14 +24,35 @@ pip install -r requirements.txt
 
 ## Usage
 
-GET scan
+**Example Usage**
+**
+Basic scan**
+python idor_hunter.py -u "https://api.example.com/user?id=1001"
 
-python idor_hunter.py -u "https://target.com/api/user?id=1001"
+**Authenticated endpoint**
+python idor_hunter.py \
+-u "https://api.example.com/user?id=1001" \
+--header "Authorization: Bearer TOKEN"
 
-POST scan
+**Cookie authentication**
+python idor_hunter.py \
+-u "https://example.com/account?id=1" \
+--cookie "session=abc123"
 
-python idor_hunter.py --post https://target/api --data "user_id=1001"
+**Burp request import**
+python idor_hunter.py --request examples/burp_request.txt
 
+**Example Output**
+[+] Target: https://api.example.com/user
+[+] ID Parameters: ['user_id']
+
+[+] Baseline -> 200 | 5421
+
+[!] Possible IDOR Detected
+Parameter: user_id
+Payload: 1002
+Status: 200
+Length: 5401
 ## Author
 
 Anand Mahajan  
