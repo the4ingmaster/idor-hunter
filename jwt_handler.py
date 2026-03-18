@@ -1,33 +1,27 @@
 import jwt
 
 
-def decode_jwt(token):
+def decode_token(token):
 
     try:
-        payload = jwt.decode(token, options={"verify_signature": False})
+        payload = jwt.decode(token,options={"verify_signature":False})
         return payload
     except:
         return None
 
 
-def mutate_jwt_ids(payload):
+def mutate_jwt(payload):
 
     mutations = []
 
-    for key in payload:
+    for k,v in payload.items():
 
-        if "id" in key.lower():
+        if "id" in k.lower() and isinstance(v,int):
 
-            base = payload[key]
+            p = payload.copy()
+            p[k] = v + 1
+            mutations.append(p)
 
-            if isinstance(base, int):
-
-                payload_copy = payload.copy()
-                payload_copy[key] = base + 1
-                mutations.append(payload_copy)
-
-                payload_copy = payload.copy()
-                payload_copy[key] = base + 10
-                mutations.append(payload_copy)
-
-    return mutations
+            p = payload.copy()
+            p[k] = v + 10
+            mutations.append(p)
