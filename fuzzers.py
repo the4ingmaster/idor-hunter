@@ -1,54 +1,24 @@
 import requests
-from urllib.parse import urlencode
-from utils import is_numeric, generate_numeric_variants, is_uuid, generate_uuid_variants
+from utils import is_numeric, generate_numeric_variants
 
 
-def fuzz_get(base_url, params, target_param):
+def fuzz_parameters(url, params, headers):
 
-    original_value = params[target_param]
+    results = []
 
-    mutations = []
+    for key,value in params.items():
 
-    if is_numeric(original_value):
+        if is_numeric(value):
 
-        for v in generate_numeric_variants(original_value):
+            variants = generate_numeric_variants(value)
 
-            mutated = params.copy()
-            mutated[target_param] = str(v)
-            mutations.append(mutated)
+            for v in variants:
 
-    elif is_uuid(original_value):
+                new_params = params.copy()
+                new_params[key] = str(v)
 
-        for v in generate_uuid_variants():
+                r = requests.get(url, params=new_params, headers=headers)
 
-            mutated = params.copy()
-            mutated[target_param] = v
-            mutations.append(mutated)
+                results.append((key,v,r.status_code,len(r.text)))
 
-    return mutations
-
-
-
-def fuzz_post(url, data, target_param):
-
-    original = data[target_param]
-
-    mutations = []
-
-    if is_numeric(original):
-
-        for v in generate_numeric_variants(original):
-
-            mutated = data.copy()
-            mutated[target_param] = str(v)
-            mutations.append(mutated)
-
-    elif is_uuid(original):
-
-        for v in generate_uuid_variants():
-
-            mutated = data.copy()
-            mutated[target_param] = v
-            mutations.append(mutated)
-
-    return mutations
+    return results
