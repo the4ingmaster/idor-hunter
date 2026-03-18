@@ -30,19 +30,23 @@ Basic scan**
 python idor_hunter.py -u "https://api.example.com/user?id=1001"
 
 **Authenticated endpoint**
+
 python idor_hunter.py \
 -u "https://api.example.com/user?id=1001" \
 --header "Authorization: Bearer TOKEN"
 
 **Cookie authentication**
+
 python idor_hunter.py \
 -u "https://example.com/account?id=1" \
 --cookie "session=abc123"
 
 **Burp request import**
+
 python idor_hunter.py --request examples/burp_request.txt
 
 **Example Output**
+
 [+] Target: https://api.example.com/user
 [+] ID Parameters: ['user_id']
 
