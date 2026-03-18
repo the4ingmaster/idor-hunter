@@ -1,56 +1,72 @@
-# IDOR-Hunter
+<h1 align="center">🛡️ IDOR-Hunter</h1>
 
-Advanced IDOR Detection Tool for Security Researchers and Pentesters.
+<p align="center">
+  <b>Advanced Automated IDOR Detection Tool</b><br>
+  Built for Pentesters & Bug Bounty Hunters
+</p>
 
-## Features
+<p align="center">
+  <img src="https://img.shields.io/badge/python-3.x-blue.svg">
+  <img src="https://img.shields.io/badge/platform-windows%20%7C%20linux%20%7C%20mac-green">
+  <img src="https://img.shields.io/badge/license-MIT-orange">
+  <img src="https://img.shields.io/badge/status-active-success">
+</p>
 
-• Numeric ID fuzzing  
-• UUID fuzzing  
-• POST request fuzzing  
-• JWT token IDOR testing  
-• GraphQL IDOR testing  
-• Automatic ID parameter discovery  
-• Response comparison engine  a
-• CLI interface  
-• Windows / Linux / macOS support  
+---
 
-## Installation
+## ⚡ Overview
 
-git clone https://github.com/the4ingmaster/idor-hunter
+**IDOR-Hunter** is an advanced automation tool designed to detect  
+**Insecure Direct Object Reference (IDOR)** vulnerabilities across:
 
-cd idor-hunter
+- 🌐 Web Applications  
+- 🔌 APIs  
+- 🔐 JWT-based Authentication Systems  
+- ⚡ GraphQL Endpoints  
 
-pip install -r requirements.txt
+---
 
-## Usage
+## 🔥 Features
 
+✨ **Core Capabilities**
 
-**Example Usage**
+- 🔢 Numeric ID Fuzzing  
+- 🧬 UUID Fuzzing  
+- 📬 POST Request Fuzzing  
+- 🔍 Automatic ID Parameter Discovery  
+- 📊 Response Diff Analysis  
 
-**Basic scan**
-python idor_hunter.py -u "https://api.example.com/user?id=1001"
+---
 
+✨ **Advanced Testing**
 
-**Authenticated endpoint**
+- 🔐 JWT Token ID Manipulation  
+- ⚡ GraphQL IDOR Detection  
+- 🍪 Cookie-based Authentication Support  
+- 🪪 Header-based Authentication  
+- 📂 Burp Request Import  
 
-python idor_hunter.py \
--u "https://api.example.com/user?id=1001" \
---header "Authorization: Bearer TOKEN"
+---
 
+✨ **Built for Performance**
 
-**Cookie authentication**
+- ⚙️ Cross Platform (Windows / Linux / macOS)  
+- 🚀 Fast & Lightweight  
+- 🧠 Smart Detection Logic  
 
-python idor_hunter.py \
--u "https://example.com/account?id=1" \
---cookie "session=abc123"
+---
 
+## 🖥️ Preview
 
-**Burp request import**
+```bash
+ _____ ____   ___  ____        _   _
+|_   _|  _ \ / _ \|  _ \      | | | |_   _ _ __ | |_ ___ _ __
+  | | | | | | | | | |_) |_____| |_| | | | | '_ \| __/ _ \ '__|
+  | | | |_| | |_| |  _ <_____|  _  | |_| | | | | ||  __/ |
+  |_| |____/ \___/|_| \_\    |_| |_|\__,_|_| |_|\__\___|_|
 
-python idor_hunter.py --request examples/burp_request.txt
-
-
-**Example Output**
+      Advanced IDOR Detection Framework
+      Author: Anand Mahajan
 
 [+] Target: https://api.example.com/user
 [+] ID Parameters: ['user_id']
@@ -58,15 +74,4 @@ python idor_hunter.py --request examples/burp_request.txt
 [+] Baseline -> 200 | 5421
 
 [!] Possible IDOR Detected
-Parameter: user_id
-Payload: 1002
-Status: 200
-Length: 5401
-## Author
-
-Anand Mahajan  
-Pentester
-
-## Disclaimer
-
-For authorized security testing only.
+Payload: user_id=1002
